@@ -3,7 +3,9 @@ package mrigsbee.vtbucketlist;
 import android.app.Activity;
 import android.os.Bundle;
 import android.view.View;
+import android.widget.AdapterView;
 import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.Toast;
 
@@ -37,12 +39,23 @@ public class MainActivity extends Activity{
 //            @Override
 //            public void onItemClick(AdapterView<?> parent, View view,
 //                                    int position, long id) {
-//                // TODO Auto-generated method stub
 //                String Slecteditem= items[+position];
 //                Toast.makeText(getApplicationContext(), Slecteditem, Toast.LENGTH_SHORT).show();
 //
 //            }
 //        });
+        list.setOnItemClickListener( new AdapterView.OnItemClickListener() {
+            public void onItemClick(AdapterView<?> listView, View itemView, int position, long id){
+                checkboxes.set(position, !checkboxes.get(position));
+
+                ImageView imageView = (ImageView) itemView.findViewById(R.id.icon);
+                if(checkboxes.get(position)){
+                    imageView.setImageResource(R.drawable.ic_checkbox);
+                } else {
+                    imageView.setImageResource(R.drawable.ic_checkbox_outline);
+                }
+            }
+        });
     }
 
     public void onAddItem(View v) {
