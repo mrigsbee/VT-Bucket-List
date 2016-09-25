@@ -3,12 +3,23 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
+    <android.support.v7.widget.Toolbar
+        android:id="@+id/toolbar"
+        android:layout_width="match_parent"
+        android:layout_height="?attr/actionBarSize"
+        android:background="?attr/colorPrimary"
+        android:elevation="4dp"
+        android:theme="@style/ThemeOverlay.AppCompat.ActionBar"/>
+        <!--app:popupTheme="@style/ThemeOverlay.AppCompat.Light"/>-->
+
     <ListView
         android:id="@+id/list"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_alignParentLeft="true"
-        android:layout_alignParentTop="true">
+        android:layout_alignParentStart="true"
+        android:layout_alignParentTop="true"
+        android:layout_marginTop="50dp"
+        android:layout_marginBottom="50dp">
     </ListView>
 
     <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
@@ -22,7 +33,7 @@
             android:layout_height="wrap_content"
             android:id="@+id/newItemText"
             android:layout_alignTop="@+id/btnAddItem"
-            android:hint="Enter a new item"
+            android:hint="@string/text_field"
             android:layout_alignParentLeft="true"
             android:layout_alignParentStart="true"
             android:layout_toLeftOf="@+id/btnAddItem"

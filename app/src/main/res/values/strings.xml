@@ -1,3 +1,4 @@
 <resources>
     <string name="app_name">VT Bucket List</string>
+    <string name="text_field">Enter a new activity</string>
 </resources>
