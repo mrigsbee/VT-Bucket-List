@@ -20,6 +20,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import java.util.ArrayList;
+import java.util.List;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -86,23 +87,23 @@ public class MainActivity extends AppCompatActivity {
         });
 
         /*
-            On click: toggles check/un-checked box
+            On click: toggles check/un-checked box  ***********NEEDS FIXING***********************
          */
-        list.setOnItemClickListener( new AdapterView.OnItemClickListener() {
-            public void onItemClick(AdapterView<?> listView, View itemView, int position, long id){
-
-                if(enabled) {
-                    checkboxes.set(position, !checkboxes.get(position));
-
-                    ImageView imageView = (ImageView) itemView.findViewById(R.id.icon);
-                    if (checkboxes.get(position)) {
-                        imageView.setImageResource(R.drawable.ic_checkbox);
-                    } else {
-                        imageView.setImageResource(R.drawable.ic_checkbox_outline);
-                    }
-                }
-            }
-        });
+//        list.setOnItemClickListener( new AdapterView.OnItemClickListener() {
+//            public void onItemClick(AdapterView<?> listView, View itemView, int position, long id){
+//
+//                if(enabled) {
+//                    checkboxes.set(position, !checkboxes.get(position));
+//
+//                    ImageView imageView = (ImageView) itemView.findViewById(R.id.icon);
+//                    if (checkboxes.get(position)) {
+//                        imageView.setImageResource(R.drawable.ic_checkbox);
+//                    } else {
+//                        imageView.setImageResource(R.drawable.ic_checkbox_outline);
+//                    }
+//                }
+//            }
+//        });
         /*
             On LONG click: Delete item (via alert dialog)
          */
@@ -114,7 +115,9 @@ public class MainActivity extends AppCompatActivity {
 
                 enabled = false;
                 final int location = position;
-                final String text = items.get(location);
+                List<TableEntry> entries = db.getAll();
+                final TableEntry entry = entries.get(location);
+                final String text = entry.getEntry();
 
                 //ALERT: Ask the user if they really want to delete the list item. Must select
                 //yes or no.
@@ -125,9 +128,13 @@ public class MainActivity extends AppCompatActivity {
                         new DialogInterface.OnClickListener() {
                             @Override
                             public void onClick(DialogInterface dialog, int which) {
-                                adapter.remove(text);
-                                checkboxes.remove(location);
-                                adapter.notifyDataSetChanged();
+
+                                db.delete(entry);
+                                populateListView();
+
+//                                adapter.remove(text);
+//                                checkboxes.remove(location);
+//                                adapter.notifyDataSetChanged();
                                 Toast.makeText(MainActivity.this, "\"" + text.trim() + "\" was deleted", Toast.LENGTH_LONG).show();
                                 dialog.dismiss();
                                 enabled = true;
