@@ -1,23 +1,23 @@
 package mrigsbee.vtbucketlist;
 
-import android.app.Activity;
-import android.app.Dialog;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.os.Bundle;
-import android.os.Handler;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.view.KeyEvent;
 import android.view.View;
+import android.view.inputmethod.EditorInfo;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.AdapterView;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.ListView;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import java.util.ArrayList;
-
-import static android.R.id.input;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -41,7 +41,7 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-    enabled = true;
+        enabled = true;
 
         toolbar = (Toolbar) findViewById(R.id.toolbar);
         if(toolbar != null) {
@@ -59,6 +59,25 @@ public class MainActivity extends AppCompatActivity {
         adapter = new Adapter(this, items, checkboxes);
         list=(ListView)findViewById(R.id.list);
         list.setAdapter(adapter);
+
+        final EditText newItemText = (EditText) findViewById(R.id.newItemText);
+        newItemText.setSingleLine(true); // Allows "enter" to close keyboard
+
+        newItemText.setOnEditorActionListener(new EditText.OnEditorActionListener() {
+            @Override
+            public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
+                //Close keyboard, add item to list, and clear the editor
+                if (actionId == EditorInfo.IME_ACTION_DONE) {
+                    InputMethodManager imm = (InputMethodManager)getSystemService(Context.INPUT_METHOD_SERVICE);
+                    imm.hideSoftInputFromWindow(v.getWindowToken(), 0);
+                    addItem();
+                    newItemText.setText("");
+                    return true;
+                }
+                return false;
+            }
+        });
+
         /*
             On click: toggles check/un-checked box
          */
@@ -123,7 +142,7 @@ public class MainActivity extends AppCompatActivity {
         });
     }
 
-    public void onAddItem(View v) {
+    public void addItem(){
         EditText newItemText = (EditText) findViewById(R.id.newItemText);
         String itemText = newItemText.getText().toString();
 
@@ -131,5 +150,6 @@ public class MainActivity extends AppCompatActivity {
         checkboxes.add(false);
 
         adapter.notifyDataSetChanged(); //Tell UI to display newly added item
+
     }
 }
