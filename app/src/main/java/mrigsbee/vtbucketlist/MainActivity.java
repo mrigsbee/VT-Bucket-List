@@ -26,7 +26,6 @@ public class MainActivity extends AppCompatActivity {
 
     ListView list;
     ArrayList<String> items;
-    Adapter adapter;
 
     ArrayList<Boolean> checkboxes;
     Toolbar toolbar;
@@ -62,11 +61,8 @@ public class MainActivity extends AppCompatActivity {
         items = new ArrayList<>();
         checkboxes = new ArrayList<>();
 
-        //set up adapter
-        adapter = new Adapter(this, items, checkboxes);
         list=(ListView)findViewById(R.id.list);
-//        list.setAdapter(adapter);
-        populateListView();
+        refreshUI();
 
         final EditText newItemText = (EditText) findViewById(R.id.newItemText);
         newItemText.setSingleLine(true); // Allows "enter" to close keyboard
@@ -87,23 +83,21 @@ public class MainActivity extends AppCompatActivity {
         });
 
         /*
-            On click: toggles check/un-checked box  ***********NEEDS FIXING***********************
+            On click: toggles check/un-checked box
          */
-//        list.setOnItemClickListener( new AdapterView.OnItemClickListener() {
-//            public void onItemClick(AdapterView<?> listView, View itemView, int position, long id){
-//
-//                if(enabled) {
-//                    checkboxes.set(position, !checkboxes.get(position));
-//
-//                    ImageView imageView = (ImageView) itemView.findViewById(R.id.icon);
-//                    if (checkboxes.get(position)) {
-//                        imageView.setImageResource(R.drawable.ic_checkbox);
-//                    } else {
-//                        imageView.setImageResource(R.drawable.ic_checkbox_outline);
-//                    }
-//                }
-//            }
-//        });
+        list.setOnItemClickListener( new AdapterView.OnItemClickListener() {
+            public void onItemClick(AdapterView<?> listView, View itemView, int position, long id){
+
+                if(enabled) {
+                    List<TableEntry> entries = db.getAll();
+                    TableEntry entry = entries.get(position);
+                    if(entry.getCheckbox().equals(TableEntry.CHECKBOX_OUTLINE)) entry.setCheckbox(TableEntry.CHECKBOX);
+                    else entry.setCheckbox(TableEntry.CHECKBOX_OUTLINE);
+                    db.update(entry);
+                    refreshUI();
+                }
+            }
+        });
         /*
             On LONG click: Delete item (via alert dialog)
          */
@@ -130,11 +124,8 @@ public class MainActivity extends AppCompatActivity {
                             public void onClick(DialogInterface dialog, int which) {
 
                                 db.delete(entry);
-                                populateListView();
+                                refreshUI();
 
-//                                adapter.remove(text);
-//                                checkboxes.remove(location);
-//                                adapter.notifyDataSetChanged();
                                 Toast.makeText(MainActivity.this, "\"" + text.trim() + "\" was deleted", Toast.LENGTH_LONG).show();
                                 dialog.dismiss();
                                 enabled = true;
@@ -160,16 +151,15 @@ public class MainActivity extends AppCompatActivity {
         EditText newItemText = (EditText) findViewById(R.id.newItemText);
         String itemText = newItemText.getText().toString();
 
-//        items.add(itemText);
         db.add( new TableEntry (itemText));
-        populateListView();
-//        checkboxes.add(false);
-
-        adapter.notifyDataSetChanged(); //Tell UI to display newly added item
+        refreshUI();
 
     }
 
-    public void populateListView(){
+    /*
+        Updates the UI. Call this when changes are made to the database.
+     */
+    public void refreshUI(){
         Cursor cursor = db.getAllRows();
         String[] fromFieldNames = new String[] {
                 DatabaseHandler.KEY_CHECKBOX,
@@ -185,5 +175,23 @@ public class MainActivity extends AppCompatActivity {
                 this, R.layout.row, cursor, fromFieldNames, toViewId, 0);
 
         list.setAdapter(cursorAdapter);
+
+        cursorAdapter.setViewBinder(new SimpleCursorAdapter.ViewBinder() {
+            @Override
+            public boolean setViewValue (View view, Cursor cursor, int columnIndex){
+                if (view.getId() == R.id.icon) {
+                    ImageView imageView = (ImageView) view.findViewById(R.id.icon);
+
+                    String image_name = cursor.getString(cursor.getColumnIndexOrThrow(DatabaseHandler.KEY_CHECKBOX));
+                    int id = getResources().getIdentifier(image_name, "drawable", getPackageName());
+                    imageView.setImageResource(id);
+
+                    return true;
+                }
+                return false;
+            }
+        });
+
+
     }
 }

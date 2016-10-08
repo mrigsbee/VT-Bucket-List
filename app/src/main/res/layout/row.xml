@@ -8,23 +8,23 @@
         android:layout_height="wrap_content"
         android:orientation="horizontal">
 
-        <!--<ImageView-->
-            <!--android:id="@+id/icon"-->
-            <!--android:layout_width="60dp"-->
-            <!--android:layout_height="60dp"-->
-            <!--android:padding="5dp" />-->
-
-        <!--Temporary-->
-        <TextView
+        <ImageView
             android:id="@+id/icon"
             android:layout_width="60dp"
             android:layout_height="60dp"
-            android:padding="2dp"
-            android:text="Large Text"
-            android:textAppearance="?android:attr/textAppearanceLarge"
-            android:layout_marginLeft="10dp"
-            android:layout_marginTop="15dp"
-            android:textColor="#ff6600" />/>
+            android:padding="5dp" />
+
+        <!--Temporary-->
+        <!--<TextView-->
+            <!--android:id="@+id/icon"-->
+            <!--android:layout_width="60dp"-->
+            <!--android:layout_height="60dp"-->
+            <!--android:padding="2dp"-->
+            <!--android:text="Large Text"-->
+            <!--android:textAppearance="?android:attr/textAppearanceLarge"-->
+            <!--android:layout_marginLeft="10dp"-->
+            <!--android:layout_marginTop="15dp"-->
+            <!--android:textColor="#ff6600" />/>-->
 
         <TextView
             android:id="@+id/item"

@@ -2,16 +2,19 @@ package mrigsbee.vtbucketlist;
 
 public class TableEntry {
 
+    static final String CHECKBOX_OUTLINE = "ic_checkbox_outline";
+    static final String CHECKBOX = "ic_checkbox";
+
     int _id;
     String checkbox;
     String entry;
 
     public TableEntry(){
-        super();
+        this.checkbox = CHECKBOX_OUTLINE;
     }
 
     public TableEntry(String entry){
-        this.checkbox = "false";
+        this.checkbox = CHECKBOX_OUTLINE;
         this.entry = entry;
     }
 
