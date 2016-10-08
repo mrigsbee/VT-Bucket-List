@@ -2,6 +2,7 @@ package mrigsbee.vtbucketlist;
 
 import android.content.Context;
 import android.content.DialogInterface;
+import android.database.Cursor;
 import android.os.Bundle;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
@@ -14,6 +15,7 @@ import android.widget.AdapterView;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.ListView;
+import android.widget.SimpleCursorAdapter;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -28,6 +30,8 @@ public class MainActivity extends AppCompatActivity {
     ArrayList<Boolean> checkboxes;
     Toolbar toolbar;
 
+    DatabaseHandler db;
+
     /*
         Used to "disable" onclicklistener for the list when the user is viewing
         the 'delete' dialog. Otherwise, the checkboxes can be checked/unchecked even
@@ -40,6 +44,8 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
+        db = new DatabaseHandler(this);
 
         enabled = true;
 
@@ -58,7 +64,8 @@ public class MainActivity extends AppCompatActivity {
         //set up adapter
         adapter = new Adapter(this, items, checkboxes);
         list=(ListView)findViewById(R.id.list);
-        list.setAdapter(adapter);
+//        list.setAdapter(adapter);
+        populateListView();
 
         final EditText newItemText = (EditText) findViewById(R.id.newItemText);
         newItemText.setSingleLine(true); // Allows "enter" to close keyboard
@@ -146,10 +153,30 @@ public class MainActivity extends AppCompatActivity {
         EditText newItemText = (EditText) findViewById(R.id.newItemText);
         String itemText = newItemText.getText().toString();
 
-        items.add(itemText);
-        checkboxes.add(false);
+//        items.add(itemText);
+        db.add( new TableEntry (itemText));
+        populateListView();
+//        checkboxes.add(false);
 
         adapter.notifyDataSetChanged(); //Tell UI to display newly added item
 
+    }
+
+    public void populateListView(){
+        Cursor cursor = db.getAllRows();
+        String[] fromFieldNames = new String[] {
+                DatabaseHandler.KEY_CHECKBOX,
+                DatabaseHandler.KEY_ENTRY
+        };
+
+        int[] toViewId = new int[] {
+                R.id.icon,
+                R.id.item
+        };
+
+        SimpleCursorAdapter cursorAdapter = new SimpleCursorAdapter(
+                this, R.layout.row, cursor, fromFieldNames, toViewId, 0);
+
+        list.setAdapter(cursorAdapter);
     }
 }
