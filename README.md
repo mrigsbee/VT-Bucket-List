@@ -21,6 +21,6 @@ Log:
   Added SQLite backend so now data is saved. CRUD operations work with UI properly.
   
 11/20/2016 (3 hours):
-  Added a list of "Official Hokie Bucket List" items to a new Activity.
+  Added a list of "Official Hokie Bucket List" items to a new Activity. Long-clicking items on the Official Hokie Bucket list will add the item(s) to the user's personal bucket list.
   
   
