@@ -9,51 +9,38 @@ import android.database.sqlite.SQLiteOpenHelper;
 import java.util.ArrayList;
 import java.util.List;
 
-public class DatabaseHandler extends SQLiteOpenHelper {
 
-    private static DatabaseHandler sInstance;
+public class HBLDatabaseHandler extends SQLiteOpenHelper {
 
     private static final int DATABASE_VERSION = 1;
     private static final String DATABASE_NAME = "database";
-    private static final String TABLE = "list_entries";
+    private static final String TABLE = "hblist";
 
-    //Columns names
+    // Contacts Table Columns names
     static final String _ID = "_id";
     static final String KEY_CHECKBOX = "checkbox";
     static final String KEY_ENTRY = "entry";
 
-    //create table statements
-    private static final String CREATE_TABLE =
-            "CREATE TABLE " + TABLE + "("
-            + _ID + " INTEGER PRIMARY KEY AUTOINCREMENT, "
-            + KEY_CHECKBOX + " TEXT, "
-            + KEY_ENTRY + " TEXT" + ");";
-
-    private DatabaseHandler(Context context) {
+    public HBLDatabaseHandler(Context context) {
         super(context, DATABASE_NAME, null, DATABASE_VERSION);
-    }
-
-    public static synchronized DatabaseHandler getInstance(Context context) {
-
-        if (sInstance == null) {
-            sInstance = new DatabaseHandler(context.getApplicationContext());
-        }
-        return sInstance;
     }
 
     // Creating Tables
     @Override
     public void onCreate(SQLiteDatabase db) {
-        db.execSQL(CREATE_TABLE);
+        String tbl = "CREATE TABLE " + TABLE + "("
+                + _ID + " INTEGER PRIMARY KEY AUTOINCREMENT, "
+                + KEY_CHECKBOX + " TEXT, "
+                + KEY_ENTRY + " TEXT" + ");";
+        db.execSQL(tbl);
     }
 
     // Upgrading database
     @Override
     public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
-        // on upgrade drop older tables
+        // Drop older table if existed
         db.execSQL("DROP TABLE IF EXISTS " + TABLE);
 
-        // create new tables
         onCreate(db);
     }
 
@@ -84,7 +71,6 @@ public class DatabaseHandler extends SQLiteOpenHelper {
         return entry;
     }
 
-
     public Cursor getAllRows(){
         SQLiteDatabase db = this.getReadableDatabase();
         Cursor cursor = db.query(
@@ -95,7 +81,6 @@ public class DatabaseHandler extends SQLiteOpenHelper {
         cursor.moveToFirst();
         return cursor;
     }
-
 
     public List<TableEntry> getAll() {
         List<TableEntry> list = new ArrayList<TableEntry>();
@@ -138,6 +123,7 @@ public class DatabaseHandler extends SQLiteOpenHelper {
         db.close();
     }
 
+
     public int dbSize() {
         String countQuery = "SELECT  * FROM " + TABLE;
         SQLiteDatabase db = this.getReadableDatabase();
@@ -147,4 +133,5 @@ public class DatabaseHandler extends SQLiteOpenHelper {
         // return count
         return cursor.getCount();
     }
+
 }

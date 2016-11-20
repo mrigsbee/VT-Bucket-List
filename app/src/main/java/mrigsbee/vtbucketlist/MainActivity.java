@@ -2,6 +2,7 @@ package mrigsbee.vtbucketlist;
 
 import android.content.Context;
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.database.Cursor;
 import android.os.Bundle;
 import android.support.v7.app.AlertDialog;
@@ -21,6 +22,8 @@ import android.widget.Toast;
 
 import java.util.ArrayList;
 import java.util.List;
+
+import static android.R.attr.value;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -45,17 +48,11 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        db = new DatabaseHandler(this);
+        db = DatabaseHandler.getInstance(this);
 
         enabled = true;
 
-        toolbar = (Toolbar) findViewById(R.id.toolbar);
-        if(toolbar != null) {
-            setSupportActionBar(toolbar);
-            getSupportActionBar().setTitle(R.string.app_name);
-//            getSupportActionBar().setHomeButtonEnabled(true);
-//            getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-        }
+        initToolBar();
 
         //set up lists
         items = new ArrayList<>();
@@ -147,13 +144,30 @@ public class MainActivity extends AppCompatActivity {
         });
     }
 
+    public void initToolBar(){
+        toolbar = (Toolbar) findViewById(R.id.toolbar);
+        if(toolbar != null) {
+            setSupportActionBar(toolbar);
+            getSupportActionBar().setTitle(R.string.app_name);
+            toolbar.setNavigationIcon(R.drawable.ic_menu);
+            toolbar.setNavigationOnClickListener(
+                new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        Intent myIntent = new Intent(MainActivity.this, OfficialHBLActivity.class);
+                        MainActivity.this.startActivity(myIntent);
+                    }
+                }
+            );
+        }
+    }
+
     public void addItem(){
         EditText newItemText = (EditText) findViewById(R.id.newItemText);
         String itemText = newItemText.getText().toString();
 
         db.add( new TableEntry (itemText));
         refreshUI();
-
     }
 
     /*
@@ -175,6 +189,7 @@ public class MainActivity extends AppCompatActivity {
                 this, R.layout.row, cursor, fromFieldNames, toViewId, 0);
 
         list.setAdapter(cursorAdapter);
+        list.setSelection(cursorAdapter.getCount() - 1);
 
         cursorAdapter.setViewBinder(new SimpleCursorAdapter.ViewBinder() {
             @Override
@@ -191,7 +206,5 @@ public class MainActivity extends AppCompatActivity {
                 return false;
             }
         });
-
-
     }
 }
