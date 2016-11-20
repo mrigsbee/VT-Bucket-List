@@ -20,8 +20,8 @@ Log:
   Now when the 'enter' button is clicked, an item is added to the list and the keyboard closes. Removed 'submit button'.
   Added SQLite backend so now data is saved. CRUD operations work with UI properly.
   
-11/20/2016 (3 hours):
-  Added a list of "Official Hokie Bucket List" items to a new Activity. Long-clicking items on the Official Hokie Bucket list will add the item(s) to the user's personal bucket list.
+11/20/2016 (4 hours):
+  Added a list of "Official Hokie Bucket List" items to a new Activity. Long-clicking items on the Official Hokie Bucket list will add the item(s) to the user's personal bucket list. Added coloring.
 
 
 How to use:
