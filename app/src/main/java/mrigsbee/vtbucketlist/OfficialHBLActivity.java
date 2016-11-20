@@ -9,14 +9,18 @@ import android.support.v7.widget.Toolbar;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
+import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.SimpleCursorAdapter;
+import android.widget.Toast;
 
 import java.util.ArrayList;
 import java.util.List;
 
+import static android.R.attr.enabled;
 import static android.R.attr.entries;
+import static mrigsbee.vtbucketlist.R.id.newItemText;
 
 
 public class OfficialHBLActivity  extends AppCompatActivity {
@@ -24,11 +28,14 @@ public class OfficialHBLActivity  extends AppCompatActivity {
     ListView list;
     ArrayList<String> items;
     Toolbar toolbar;
+    DatabaseHandler db;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_officialhbl);
+
+        db = DatabaseHandler.getInstance(this);
 
         initToolBar();
         initList();
@@ -41,6 +48,19 @@ public class OfficialHBLActivity  extends AppCompatActivity {
                 items );
 
         list.setAdapter(arrayAdapter);
+
+        /*
+            On click: item is saved to user's bucket list
+         */
+        list.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
+            @Override
+            public boolean onItemLongClick(AdapterView<?> parent, View view, int position, long arg3) {
+                String select = (list.getItemAtPosition(position).toString());
+                db.add( new TableEntry (select));
+                Toast.makeText(OfficialHBLActivity.this, "\"" + select.trim() + "\" was added to your list", Toast.LENGTH_LONG).show();
+                return true;
+            }
+        });
 
     }
 
